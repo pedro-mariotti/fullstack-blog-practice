@@ -1,9 +1,4 @@
-"use client";
-import { useRouter } from "next/navigation";
-
-function App() {
-  const router = useRouter();
-
+function Register() {
   return (
     <>
       <main className="flex max-h-max min-h-screen w-screen items-center justify-center bg-[#1e293b] text-[#0f172a]">
@@ -39,7 +34,6 @@ function App() {
               className="border-1-black cursor-pointer rounded-lg bg-[#22c55e] text-white p-2"
               type="button"
               value="Sign up"
-              onClick={() => router.push("/register")}
             />
           </div>
         </form>
@@ -48,4 +42,4 @@ function App() {
   );
 }
 
-export default App;
+export default Register;
