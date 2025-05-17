@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import BlogPost from "@/components/blogpost";
-import Spinner from "@/components/spinner";
-import PostCreatorModal from "@/components/PostCreatorModal";
+import BlogPost from "@/components/dashboard/BlogPost";
+import Spinner from "@/components/dashboard/Spinner";
+import PostCreatorModal from "@/components/dashboard/PostCreatorModal";
+import NavBar from "@/components/dashboard/NavBar";
 
 interface Post {
+  postID: number;
   id: number;
   title: string;
   content: string;
@@ -15,72 +17,90 @@ function Dashboard() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-
   useEffect(() => {
-    // Check for a valid token
-    const token = localStorage.getItem("token"); // Replace with your token storage logic
-    if (!token) {
-      router.push("/login"); // Redirect to login page if no token
-      return;
-    }
-
-    // Simulate fetching data from the backend
-    async function fetchPosts() {
+    const fetchPosts = async () => {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        router.push("/?error=unauthorized"); // Pass query parameter
+        return;
+      }
       try {
-        const response = await fetch("/api/posts", {
-          headers: {
-            Authorization: `Bearer ${token}`, // Include token in the request
+        const response = await fetch(
+          "https://backend-crud-practice-theta.vercel.app/protected/blog",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        });
+        );
         if (!response.ok) {
           throw new Error("Unauthorized");
         }
         const data = await response.json();
-        setPosts(data);
+        console.log("Fetched posts:", data.blogPosts); // Log the fetched posts
+        setPosts(data.blogPosts);
       } catch (error) {
         console.error("Error fetching posts:", error);
-        router.push("/login"); // Redirect to login on error
+        router.push("/?error=unauthorized");
       } finally {
         setLoading(false);
       }
-    }
-
+    };
     fetchPosts();
   }, [router]);
 
+  const updatePosts = async () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) return;
+
+    try {
+      const response = await fetch(
+        "https://backend-crud-practice-theta.vercel.app/protected/blog",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch updated posts");
+      }
+      const data = await response.json();
+      setPosts(data.blogPosts);
+    } catch (error) {
+      console.error("Error updating posts:", error);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    router.push("/");
+  };
+
   return (
-    <div className="flex max-h-max min-h-screen w-screen flex-col items-center bg-[#1e293b] text-[#0f172a]">
-      <nav className="w-full bg-white">
-        <ul className="flex gap-4">
-          <li>
-            <p>
-              Hello, <span>Username</span>!
-            </p>
-            <a href="/" className="text-white hover:text-blue-500">
-              Log out
-            </a>
-          </li>
-        </ul>
-      </nav>
-      <main className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-[#1e293b] text-[#0f172a]">
-        <h1 className="text-4xl font-bold text-white">My posts</h1>
-        <div className="flex w-1/2 flex-col items-center justify-center gap-4 rounded-2xl bg-[#f1f5f9] p-8">
+    <div className="flex h-screen w-screen flex-col bg-[#1e293b] text-[#0f172a]">
+      <NavBar handleLogout={handleLogout} />
+      <main className="flex flex-1 flex-col items-center justify-center gap-4 overflow-hidden bg-[#1e293b] p-4 text-[#0f172a]">
+        <h1 className="text-2xl font-bold text-white sm:text-4xl">My posts</h1>
+        <div className="flex w-full max-w-4xl flex-col items-center justify-center gap-4 rounded-2xl bg-[#f1f5f9] p-4 shadow-lg sm:p-8">
           {loading ? (
             <Spinner />
           ) : posts.length > 0 ? (
-            <ul>
+            <ul className="w-full list-none">
               {posts.map((post) => (
                 <BlogPost
-                  key={post.id}
+                  key={`post-${post.postID}`}
+                  id={post.postID}
                   title={post.title}
                   content={post.content}
+                  updatePosts={updatePosts}
                 />
               ))}
             </ul>
           ) : (
             <p className="text-black">No posts available.</p>
           )}
-          <PostCreatorModal />
+          <PostCreatorModal updatePosts={updatePosts} />
         </div>
       </main>
     </div>
