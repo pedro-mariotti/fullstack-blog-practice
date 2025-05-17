@@ -73,6 +73,7 @@ function PostCreatorModal(props: { updatePosts: () => void }) {
                   type="text"
                   id="title"
                   value={title}
+                  required
                   onChange={(e) => setTitle(e.target.value)}
                   className="w-full rounded border px-3 py-2 focus:ring focus:ring-blue-300 focus:outline-none"
                 />
@@ -88,6 +89,7 @@ function PostCreatorModal(props: { updatePosts: () => void }) {
                   id="content"
                   rows={4}
                   value={content}
+                  required
                   onChange={(e) => setContent(e.target.value)}
                   className="w-full rounded border px-3 py-2 focus:ring focus:ring-blue-300 focus:outline-none"
                 ></textarea>
