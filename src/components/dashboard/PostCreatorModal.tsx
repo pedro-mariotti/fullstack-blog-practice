@@ -53,7 +53,7 @@ function PostCreatorModal(props: { updatePosts: () => void }) {
 
       {isOpen && (
         <div
-          className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black"
+          className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-[#0000008f]"
           onClick={toggleModal}
         >
           <div

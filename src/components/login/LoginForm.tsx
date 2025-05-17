@@ -75,12 +75,12 @@ function LoginForm() {
       </div>
       <div className="flex w-full flex-col gap-4 sm:flex-row sm:justify-between">
         <input
-          className="cursor-pointer rounded-lg bg-[#2563eb] p-2 text-sm text-white sm:text-base"
+          className="cursor-pointer rounded-lg bg-[#2563eb] p-2 text-sm text-white hover:bg-[#1d4ed8] sm:text-base"
           type="submit"
           value="Login"
         />
         <input
-          className="cursor-pointer rounded-lg bg-[#22c55e] p-2 text-sm text-white sm:text-base"
+          className="cursor-pointer rounded-lg bg-[#22c55e] p-2 text-sm text-white hover:bg-[#16a34a] sm:text-base"
           type="button"
           value="Sign up"
           onClick={() => router.push("/register")}

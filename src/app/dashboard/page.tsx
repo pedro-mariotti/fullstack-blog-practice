@@ -78,7 +78,7 @@ function Dashboard() {
   };
 
   return (
-    <div className="flex h-screen w-screen flex-col bg-[#1e293b] text-[#0f172a]">
+    <div className="flex h-screen w-screen flex-col bg-[#1e293b] font-sans text-[#0f172a]">
       <NavBar handleLogout={handleLogout} />
       <main className="flex flex-1 flex-col items-center justify-center gap-4 overflow-hidden bg-[#1e293b] p-4 text-[#0f172a]">
         <h1 className="text-2xl font-bold text-white sm:text-4xl">My posts</h1>
